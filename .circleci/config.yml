@@ -21,10 +21,10 @@ jobs:
       - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'sudo rm -r index.html'
       - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.232.206.209:/var/www/html  
 
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
+    #steps:
+      #- add_ssh_keys:
+          #fingerprints:
+            #- "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
       - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'cd /var/www/html/'
       - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'sudo rm -r index.html'
       - run : scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.216.175.211:/var/www/html  
