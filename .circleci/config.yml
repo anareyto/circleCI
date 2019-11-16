@@ -43,10 +43,10 @@ workflows:
                 - master
       - request-testing:
         type: approval
-          requires:
+        requires:
             - deployCapaDesarrollo
       - deployProd1y2:
-          requires:
+        requires:
             - request-testing
           filters:
             branches:
