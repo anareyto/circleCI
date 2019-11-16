@@ -1,53 +1,58 @@
 version: 2
 jobs:
-    deployCapaDesarrollo:
-        working_directory: ~/repo
-            steps:
-                - checkout
-                - add_ssh_keys:
-                  fingerprints:
-                    - "b5:03:4c:ed:9b:e4:fa:50:3e:21:c0:55:e8:a5:ea:4f"     
-                - run : ssh -o StrictHostKeyChecking=no ubuntu@52.3.129.129 'sudo chmod 777 /var/www/html'
-                - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@52.3.129.129:/var/www/html
+  deployCapaDesarrollo:
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "b5:03:4c:ed:9b:e4:fa:50:3e:21:c0:55:e8:a5:ea:4f"     
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@52.3.129.129 'sudo chmod 777 /var/www/html'
+      - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@52.3.129.129:/var/www/html
 
-    deployProd1y2:
-        working_directory: ~/repo
-            steps:
-                - add_ssh_keys:
-                  fingerprints:
-                    - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
-              - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'cd /var/www/html/'
-              - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'sudo rm -r index.html'
-              - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.232.206.209:/var/www/html  
+  deployProd1y2:
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'cd /var/www/html/'
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'sudo rm -r index.html'
+      - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.232.206.209:/var/www/html  
 
-            steps:
-              - add_ssh_keys:
-                  fingerprints:
-                    - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
-              - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'cd /var/www/html/'
-              - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'sudo rm -r index.html'
-              - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.216.175.211:/var/www/html  
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'cd /var/www/html/'
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'sudo rm -r index.html'
+      - run : scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.216.175.211:/var/www/html  
 
 
 
 
-        workflows:
-          version: 2
-          normal_run:
-            jobs:      
-            - deployCapaDesarrollo:
-                filters:
-                  branches:
-                    only:
-                      - master
-            - request-testing:
-                type: approval
-                requires:
-                  - deployCapaDesarrollo
-            - deployProd1y2:
-                requires:
-                  - request-testing
-                filters:
-                  branches:
-                    only:
-                      - master
+workflows:
+  version: 2
+  normal_run:
+    jobs:      
+      - deployCapaDesarrollo:
+          filters:
+            branches:
+              only:
+                - master
+      - request-testing:
+        type: approval
+          requires:
+            - deployCapaDesarrollo
+      - deployProd1y2:
+          requires:
+            - request-testing
+          filters:
+            branches:
+              only:
+                - master
+
+ 
+    
+
