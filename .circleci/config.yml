@@ -1,6 +1,8 @@
 version: 2
 jobs:
   deployCapaDesarrollo:
+    docker:
+      - image: circleci/node:10
     working_directory: ~/repo
     steps:
       - checkout
@@ -11,6 +13,8 @@ jobs:
       - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@52.3.129.129:/var/www/html
 
   deployProd1y2:
+    docker:
+      - image: circleci/node:10
     working_directory: ~/repo
     steps:
       - checkout
