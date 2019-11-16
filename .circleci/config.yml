@@ -13,7 +13,7 @@ jobs:
     deployProd1y2:
         working_directory: ~/repo
             steps:
-              - add_ssh_keys:
+                - add_ssh_keys:
                   fingerprints:
                     - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
               - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'cd /var/www/html/'
@@ -35,19 +35,19 @@ jobs:
           version: 2
           normal_run:
             jobs:      
-             - deployCapaDesarrollo:
-                  filters:
-                    branches:
-                      only:
-                        - master
-                - request-testing:
-                  type: approval
-                  requires:
-                    - deployCapaDesarrollo
-                - deployProd1y2:
-                    requires:
-                      - request-testing
-                    filters:
-                      branches:
-                        only:
-                         - master
+            - deployCapaDesarrollo:
+                filters:
+                  branches:
+                    only:
+                      - master
+            - request-testing:
+                type: approval
+                requires:
+                  - deployCapaDesarrollo
+            - deployProd1y2:
+                requires:
+                  - request-testing
+                filters:
+                  branches:
+                    only:
+                      - master
