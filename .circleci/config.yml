@@ -1,40 +1,61 @@
 version: 2
 jobs:
-  one:
-    docker:
-      - image: circleci/ruby:2.4.1
-    steps:
-      - checkout
-      - run: echo "A first hello"
-      - run: mkdir -p my_workspace
-      - run: echo "Trying out workspaces" > my_workspace/echo-output
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory
-          root: my_workspace
-          # Must be relative path from root
-          paths:
-            - echo-output      
-  two:
-    docker:
-      - image: circleci/ruby:2.4.1
-    steps:
-      - checkout
-      - run: echo "A more familiar hi"  
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: my_workspace
+    working_directory: ~/repo
+    
+  deployCapaDesarrollo:
+  
+    working_directory: ~/repo
 
-      - run: |
-          if [[ $(cat my_workspace/echo-output) == "Trying out workspaces" ]]; then
-            echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
+    steps:
+      - checkout
+      
+      - add_ssh_keys:
+          fingerprints:
+            - "b5:03:4c:ed:9b:e4:fa:50:3e:21:c0:55:e8:a5:ea:4f"     
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@52.3.129.129 'sudo chmod 777 /var/www/html'
+      - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@52.3.129.129:/var/www/html
+      
+  deployProd1y2:
+    working_directory: ~/repo
+
+    steps:
+    
+      - add_ssh_keys:
+          fingerprints:
+            - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'cd /var/www/html/'
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.232.206.209 'sudo rm -r index.html'
+      - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.232.206.209:/var/www/html  
+    
+    steps:
+    
+      - add_ssh_keys:
+          fingerprints:
+            - "41:d5:1f:eb:85:31:33:dd:a8:39:74:57:4e:06:79:69"
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'cd /var/www/html/'
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@3.216.175.211 'sudo rm -r index.html'
+      - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@3.216.175.211:/var/www/html  
+      
+    
+
+
 workflows:
   version: 2
-  one_and_two:
-    jobs:
-      - one
-      - two:
+  normal_run:
+    jobs:      
+     - deployCapaDesarrollo:
+          filters:
+            branches:
+              only:
+                - master
+        - request-testing:
+          type: approval
           requires:
-            - one
+            - deployCapaDesarrollo
+        - deployProd1y2:
+            requires:
+              - request-testing
+            filters:
+              branches:
+                only:
+                 - master
