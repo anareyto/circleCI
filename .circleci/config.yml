@@ -9,8 +9,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "b5:03:4c:ed:9b:e4:fa:50:3e:21:c0:55:e8:a5:ea:4f"     
-      - run : ssh -o StrictHostKeyChecking=no ubuntu@52.3.129.129 'sudo chmod 777 /var/www/html'
-      - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@52.3.129.129:/var/www/html
+      - run : ssh -o StrictHostKeyChecking=no ubuntu@18.205.84.126 'sudo chmod 777 /var/www/html'
+      - run: scp -o StrictHostKeyChecking=no -r ./index.html ubuntu@18.205.84.126:/var/www/html
 
   deployProd1y2:
     docker:
